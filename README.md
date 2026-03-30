@@ -55,4 +55,4 @@ Si vous citez cet outil, utilisez ce lien:
 
 ## Licence
 
-Projet prive / usage personnel (a ajuster selon votre choix).
+MIT
