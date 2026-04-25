@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "./components/ThemeProvider";
@@ -108,7 +109,7 @@ export const metadata: Metadata = {
   classification: "Utility, Productivity",
 };
 
-// JSON-LD structured data
+// JSON-LD
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
@@ -168,7 +169,7 @@ const faqJsonLd = {
       name: "Puis-je utiliser plusieurs minuteurs en même temps ?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Oui, vous pouvez créer et exécuter autant de minuteurs simultanés que vous le souhaitez. Chaque minuteur fonctionne de manière indépendante avec son propre compte à rebours.",
+        text: "Oui, vous pouvez créer et exécuter autant de minuteurs simultanés que vous le souhaitez.",
       },
     },
     {
@@ -176,7 +177,7 @@ const faqJsonLd = {
       name: "Le chronomètre fonctionne-t-il en arrière-plan ?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Oui, le chronomètre et les minuteurs continuent de fonctionner même si vous changez d'onglet ou réduisez la fenêtre. Le temps est sauvegardé automatiquement.",
+        text: "Oui, il continue même si vous changez d'onglet.",
       },
     },
   ],
@@ -197,12 +198,13 @@ const breadcrumbJsonLd = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="fr" dir="ltr" suppressHydrationWarning>
       <head>
+        {/* JSON-LD */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -213,8 +215,28 @@ export default function RootLayout({
         />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(breadcrumbJsonLd),
+          }}
         />
+
+        {/* Matomo */}
+        <Script id="matomo" strategy="afterInteractive">
+          {`
+            var _paq = window._paq = window._paq || [];
+            _paq.push(['trackPageView']);
+            _paq.push(['enableLinkTracking']);
+            (function() {
+              var u="https://analytics.arthurp.fr/";
+              _paq.push(['setTrackerUrl', u+'matomo.php']);
+              _paq.push(['setSiteId', '4']);
+              var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+              g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+            })();
+          `}
+        </Script>
+
+        {/* perf */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
@@ -222,6 +244,7 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
       </head>
+
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

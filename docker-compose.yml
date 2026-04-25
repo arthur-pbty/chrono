@@ -1,11 +1,24 @@
 services:
-  web:
-    build: .
+  app:
+    container_name: chrono-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+
+    env_file:
+      - .env
+
     ports:
-      - "3000:3000"
-    volumes:
-      - ./:/app
-      - /app/node_modules
+      - "${WEB_PORT:-3000}:3000"
+
     environment:
-      - NODE_ENV=development
-    command: npm run dev
+      - PORT=3000
+      - HOSTNAME=0.0.0.0
+
+    networks:
+      - app
+
+networks:
+  app:
+    driver: bridge
